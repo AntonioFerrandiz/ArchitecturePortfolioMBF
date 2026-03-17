@@ -1,5 +1,7 @@
 import AdminNav from "@/components/admin/AdminNav";
 import AboutForm from "@/components/admin/AboutForm";
+
+export const dynamic = "force-dynamic";
 import { createAdminClient } from "@/lib/supabase-server";
 import { DEFAULT_ABOUT } from "@/types";
 

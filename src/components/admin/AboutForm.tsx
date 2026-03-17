@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import ImageUpload from "./ImageUpload";
 import { Loader2, Plus, X } from "lucide-react";
 import type { DbAbout } from "@/types";
@@ -10,6 +11,7 @@ interface AboutFormProps {
 }
 
 export default function AboutForm({ initial }: AboutFormProps) {
+  const router = useRouter();
   const [form, setForm] = useState<DbAbout>(initial);
   const [skillInput, setSkillInput] = useState("");
   const [saving, setSaving] = useState(false);
@@ -45,8 +47,10 @@ export default function AboutForm({ initial }: AboutFormProps) {
       });
       const json = await res.json();
       if (!res.ok) throw new Error(json.error ?? "Error al guardar");
+      setForm(json);
       setSuccess(true);
       setTimeout(() => setSuccess(false), 4000);
+      router.refresh();
     } catch (e) {
       setError(e instanceof Error ? e.message : "Error desconocido");
     } finally {
