@@ -1,17 +1,41 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import { createClient } from "@supabase/supabase-js";
 
-export const metadata: Metadata = {
-  title: "Maria Belen Ferrándiz — Arquitecta",
-  description:
-    "Portfolio profesional de Maria Belen Ferrándiz, arquitecta junior especializada en diseño residencial, bioclimático y de interiores en Lima, Perú.",
-  keywords: ["arquitectura", "portafolio", "diseño", "Lima", "Perú", "bioclimático"],
-  openGraph: {
-    title: "Maria Belen Ferrándiz — Arquitecta",
-    description: "Portfolio profesional de arquitectura.",
-    type: "website",
-  },
-};
+async function fetchAboutMeta() {
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+  const tenant = process.env.TENANT_SLUG;
+  if (!url || !key || !tenant) return null;
+  try {
+    const supabase = createClient(url, key);
+    const { data } = await supabase
+      .from("about")
+      .select("name, role")
+      .eq("tenant_slug", tenant)
+      .limit(1)
+      .single();
+    return data ?? null;
+  } catch {
+    return null;
+  }
+}
+
+export async function generateMetadata(): Promise<Metadata> {
+  const about = await fetchAboutMeta();
+  const name = about?.name ?? "Arquitecta";
+  const role = about?.role ?? "Arquitectura";
+  return {
+    title: `${name} — ${role}`,
+    description: `Portfolio profesional de ${name}, ${role}.`,
+    keywords: ["arquitectura", "portafolio", "diseño"],
+    openGraph: {
+      title: `${name} — ${role}`,
+      description: `Portfolio profesional de ${name}.`,
+      type: "website",
+    },
+  };
+}
 
 export default function RootLayout({
   children,
