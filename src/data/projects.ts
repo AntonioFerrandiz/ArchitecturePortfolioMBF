@@ -118,24 +118,6 @@ export const projects: Project[] = [
     tags: ["Paisajismo", "Huerto urbano", "Terraza"],
   },
 ];
-
-export interface Project {
-  id: string;
-  title: string;
-  location: string;
-  year: string;
-  category: string;
-  coverImage: string;
-  images: string[];
-  description: string;
-  fullDescription: string;
-  tags: string[];
-  featured?: boolean;
-}
-
-export const projects: Project[] = [
-  {
-    id: "casa-horizonte",
     title: "Casa Horizonte",
     location: "Lima, Perú",
     year: "2024",
