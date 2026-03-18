@@ -21,7 +21,7 @@ export const projects: Project[] = [
   {
     id: "casa-serena",
     title: "Casa Serena",
-    location: "Bogotá, Colombia",
+    location: "Bogotá, Colombiaa",
     year: "2024",
     category: "Residencial",
     coverImage: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800&q=80",
