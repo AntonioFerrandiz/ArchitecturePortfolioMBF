@@ -4,12 +4,19 @@ import AboutForm from "@/components/admin/AboutForm";
 export const dynamic = "force-dynamic";
 import { createAdminClient } from "@/lib/supabase-server";
 import { DEFAULT_ABOUT } from "@/types";
+import { getTenantSlug } from "@/lib/tenant";
 
 export default async function AboutAdminPage() {
   let about = DEFAULT_ABOUT;
   try {
+    const tenant = getTenantSlug();
     const supabase = createAdminClient();
-    const { data } = await supabase.from("about").select("*").limit(1).single();
+    const { data } = await supabase
+      .from("about")
+      .select("*")
+      .eq("tenant_slug", tenant)
+      .limit(1)
+      .single();
     if (data) about = data;
   } catch {
     // Si Supabase no está configurado, usamos los valores por defecto
