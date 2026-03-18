@@ -2,12 +2,12 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Maria Belen Ferrándiz — Arquitecta",
+  title: "Valentina Ríos — Arquitecta",
   description:
-    "Portfolio profesional de Maria Belen Ferrándiz, arquitecta junior especializada en diseño residencial, bioclimático y de interiores en Lima, Perú.",
-  keywords: ["arquitectura", "portafolio", "diseño", "Lima", "Perú", "bioclimático"],
+    "Portfolio profesional de Valentina Ríos, arquitecta especializada en diseño residencial sostenible y proyectos de uso mixto en Bogotá, Colombia.",
+  keywords: ["arquitectura", "portafolio", "diseño", "Bogotá", "Colombia", "sostenible"],
   openGraph: {
-    title: "Maria Belen Ferrándiz — Arquitecta",
+    title: "Valentina Ríos — Arquitecta",
     description: "Portfolio profesional de arquitectura.",
     type: "website",
   },

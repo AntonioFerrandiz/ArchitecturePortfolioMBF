@@ -32,27 +32,26 @@ export interface DbAbout {
   instagram_display: string;
 }
 
-// Valores por defecto que coinciden con el contenido actual del portafolio
+// Valores por defecto — datos de la arquitecta demo
 export const DEFAULT_ABOUT: DbAbout = {
   id: "",
-  name: "Maria Belen Ferrándiz",
-  initials: "MBF",
-  role: "Arquitecta · Lima, Perú",
-  subtitle: "Diseño espacios que dialogan con la luz,\nel material y el entorno.",
-  bio: "Soy Maria Belen Ferrándiz, arquitecta de la Universidad Peruana de Ciencias Aplicadas. Me especializo en diseño residencial y de interiores con un enfoque bioclimático y sensible al contexto.\n\nCreo en una arquitectura que parte de la escucha: del lugar, del material y de quienes habitan el espacio. Cada proyecto es una oportunidad de crear algo duradero, honesto y bello.\n\nActualmente colaboro con estudios de Lima y desarrollo proyectos propios de pequeña y mediana escala.",
+  name: "Valentina Ríos",
+  initials: "VR",
+  role: "Arquitecta · Bogotá, Colombia",
+  subtitle: "Creo espacios que equilibran\nfunción, belleza y sostenibilidad.",
+  bio: "Soy Valentina Ríos, arquitecta egresada de la Universidad de Los Andes. Me especializo en diseño residencial contemporáneo y proyectos de uso mixto con un enfoque sostenible y centrado en las personas.\n\nMi trabajo parte de entender el lugar y a quienes lo habitarán. Cada proyecto es una conversación entre el entorno, los materiales y la vida cotidiana.\n\nActualmente trabajo de manera independiente en Bogotá y colaboro con estudios en Medellín y Ciudad de México.",
   photo_url:
-    "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=600&q=80",
+    "https://images.unsplash.com/photo-1580489944761-15a19d654956?w=600&q=80",
   skills: [
     "Diseño residencial",
-    "Arquitectura bioclimática",
+    "Proyectos sostenibles",
+    "Uso mixto",
     "Interiorismo",
-    "Paisajismo",
-    "Intervención patrimonial",
+    "Consultoría de obra",
   ],
-  email: "mariabelen.ferrandiz@email.com",
-  linkedin_url:
-    "https://www.linkedin.com/in/mar%C3%ADa-bel%C3%A9n-ferr%C3%A1ndiz-bendez%C3%BA-b8915a286/",
-  linkedin_display: "linkedin.com/in/mariabelenferrandiz",
-  instagram_url: "https://www.instagram.com/belen.arquitectura/",
-  instagram_display: "@belen.arquitectura",
+  email: "valentina.rios@email.com",
+  linkedin_url: "https://linkedin.com/in/valentinarios",
+  linkedin_display: "linkedin.com/in/valentinarios",
+  instagram_url: "https://instagram.com/valentina.arquitectura",
+  instagram_display: "@valentina.arquitectura",
 };
