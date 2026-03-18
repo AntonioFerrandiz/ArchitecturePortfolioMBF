@@ -3,10 +3,10 @@ import { FolderOpen, User, ExternalLink } from "lucide-react";
 
 export default async function DashboardPage() {
   return (
-    <div className="flex min-h-screen">
+    <div className="md:flex min-h-screen">
       <AdminNav active="/admin/dashboard" />
 
-      <main className="flex-1 p-8 md:p-12">
+      <main className="flex-1 pt-14 md:pt-0 p-6 md:p-12">
         <div className="max-w-3xl">
           <h1 className="font-display text-3xl font-light text-[#2C2825] mb-2">
             Bienvenida 👋

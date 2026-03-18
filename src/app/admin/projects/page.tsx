@@ -42,13 +42,13 @@ export default function ProjectsAdminPage() {
   }
 
   return (
-    <div className="flex min-h-screen">
+    <div className="md:flex min-h-screen">
       <AdminNav active="/admin/projects" />
 
-      <main className="flex-1 p-8 md:p-12">
+      <main className="flex-1 pt-14 md:pt-0 p-6 md:p-12">
         <div className="max-w-5xl">
           {/* Header */}
-          <div className="flex items-center justify-between mb-8">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
             <div>
               <h1 className="font-display text-3xl font-light text-[#2C2825]">
                 Proyectos
@@ -59,7 +59,7 @@ export default function ProjectsAdminPage() {
             </div>
             <Link
               href="/admin/projects/new"
-              className="flex items-center gap-2 bg-[#2C2825] text-[#FAF8F5] text-xs tracking-[0.15em] uppercase px-5 py-3 hover:bg-[#3D3733] transition-colors"
+              className="self-start sm:self-auto flex items-center gap-2 bg-[#2C2825] text-[#FAF8F5] text-xs tracking-[0.15em] uppercase px-5 py-3 hover:bg-[#3D3733] transition-colors"
             >
               <Plus size={14} />
               Nuevo proyecto
@@ -93,12 +93,12 @@ export default function ProjectsAdminPage() {
               {projects.map((project, i) => (
                 <div
                   key={project.id}
-                  className={`flex items-center gap-4 p-4 ${
+                  className={`flex items-start gap-3 p-4 ${
                     i !== 0 ? "border-t border-[#F4F0EB]" : ""
                   } hover:bg-[#FAF8F5] transition-colors`}
                 >
                   {/* Thumbnail */}
-                  <div className="w-16 h-12 relative shrink-0 bg-[#E8E0D5] overflow-hidden">
+                  <div className="w-14 h-11 md:w-16 md:h-12 relative shrink-0 bg-[#E8E0D5] overflow-hidden">
                     {project.cover_image && (
                       <Image
                         src={project.cover_image}
@@ -110,7 +110,7 @@ export default function ProjectsAdminPage() {
                     )}
                   </div>
 
-                  {/* Info */}
+                  {/* Info + acciones */}
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2">
                       <span className="text-sm font-medium text-[#2C2825] truncate">
@@ -123,10 +123,32 @@ export default function ProjectsAdminPage() {
                     <p className="text-xs text-[#9B8E82] mt-0.5">
                       {project.category} · {project.location} · {project.year}
                     </p>
+                    {/* Acciones — debajo en móvil, en línea en desktop */}
+                    <div className="flex items-center gap-2 mt-2 md:mt-0 md:hidden">
+                      <Link
+                        href={`/admin/projects/${project.id}/edit`}
+                        className="flex items-center gap-1 text-xs text-[#8C8279] hover:text-[#2C2825] border border-[#E8E0D5] hover:border-[#8C8279] px-2.5 py-1.5 transition-colors"
+                      >
+                        <Pencil size={11} />
+                        Editar
+                      </Link>
+                      <button
+                        onClick={() => handleDelete(project.id, project.title)}
+                        disabled={deleting === project.id}
+                        className="flex items-center gap-1 text-xs text-red-400 hover:text-red-600 border border-[#E8E0D5] hover:border-red-300 px-2.5 py-1.5 transition-colors disabled:opacity-50"
+                      >
+                        {deleting === project.id ? (
+                          <Loader2 size={11} className="animate-spin" />
+                        ) : (
+                          <Trash2 size={11} />
+                        )}
+                        Eliminar
+                      </button>
+                    </div>
                   </div>
 
-                  {/* Acciones */}
-                  <div className="flex items-center gap-2 shrink-0">
+                  {/* Acciones desktop */}
+                  <div className="hidden md:flex items-center gap-2 shrink-0">
                     <Link
                       href={`/admin/projects/${project.id}/edit`}
                       className="flex items-center gap-1.5 text-xs text-[#8C8279] hover:text-[#2C2825] border border-[#E8E0D5] hover:border-[#8C8279] px-3 py-1.5 transition-colors"
