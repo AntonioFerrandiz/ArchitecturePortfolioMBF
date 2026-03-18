@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { Loader2, Eye, EyeOff } from "lucide-react";
 
@@ -10,6 +10,14 @@ export default function AdminLoginPage() {
   const [showPw, setShowPw] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [initials, setInitials] = useState("");
+
+  useEffect(() => {
+    fetch("/api/public/about")
+      .then((r) => r.json())
+      .then((d) => { if (d?.initials) setInitials(d.initials); })
+      .catch(() => {});
+  }, []);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -40,7 +48,7 @@ export default function AdminLoginPage() {
         {/* Logo */}
         <div className="text-center mb-10">
           <span className="font-display text-4xl tracking-widest text-[#2C2825] uppercase">
-            MBF
+            {initials || "···"}
           </span>
           <p className="text-xs tracking-[0.2em] uppercase text-[#9B8E82] mt-2">
             Panel de administración

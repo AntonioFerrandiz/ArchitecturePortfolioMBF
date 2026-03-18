@@ -1,11 +1,12 @@
 -- ============================================================
--- Supabase SQL Setup — Portafolio de Arquitectura
+-- Supabase SQL Setup — Portafolio de Arquitectura (Multi-tenant)
 -- Ejecuta este script en Supabase > SQL Editor
 -- ============================================================
 
 -- Tabla: proyectos
 CREATE TABLE IF NOT EXISTS projects (
   id            UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  tenant_slug   TEXT NOT NULL DEFAULT '',
   title         TEXT NOT NULL,
   location      TEXT NOT NULL DEFAULT '',
   year          TEXT NOT NULL DEFAULT '',
@@ -20,13 +21,14 @@ CREATE TABLE IF NOT EXISTS projects (
   created_at    TIMESTAMPTZ DEFAULT NOW()
 );
 
--- Tabla: sobre mí (siempre 1 fila)
+-- Tabla: sobre mi (1 fila por tenant)
 CREATE TABLE IF NOT EXISTS about (
   id                 UUID DEFAULT gen_random_uuid() PRIMARY KEY,
-  name               TEXT NOT NULL DEFAULT 'Maria Belen Ferrándiz',
-  initials           TEXT NOT NULL DEFAULT 'MBF',
-  role               TEXT NOT NULL DEFAULT 'Arquitecta · Lima, Perú',
-  subtitle           TEXT NOT NULL DEFAULT 'Diseño espacios que dialogan con la luz, el material y el entorno.',
+  tenant_slug        TEXT NOT NULL DEFAULT '',
+  name               TEXT NOT NULL DEFAULT '',
+  initials           TEXT NOT NULL DEFAULT '',
+  role               TEXT NOT NULL DEFAULT '',
+  subtitle           TEXT NOT NULL DEFAULT '',
   bio                TEXT NOT NULL DEFAULT '',
   photo_url          TEXT NOT NULL DEFAULT '',
   skills             TEXT[] DEFAULT '{}',
@@ -38,23 +40,33 @@ CREATE TABLE IF NOT EXISTS about (
   updated_at         TIMESTAMPTZ DEFAULT NOW()
 );
 
+-- Indices para filtrado eficiente por tenant
+CREATE INDEX IF NOT EXISTS projects_tenant_slug_idx ON projects(tenant_slug);
+CREATE INDEX IF NOT EXISTS about_tenant_slug_idx    ON about(tenant_slug);
+
 -- ============================================================
--- Bucket de Storage para imágenes
+-- Migracion (si ya tienes datos existentes sin tenant_slug)
+-- Ejecuta esto si la tabla ya existe con filas previas:
 -- ============================================================
--- Crea un bucket llamado "portfolio-images" marcado como público
+-- ALTER TABLE projects ADD COLUMN IF NOT EXISTS tenant_slug TEXT NOT NULL DEFAULT '';
+-- ALTER TABLE about    ADD COLUMN IF NOT EXISTS tenant_slug TEXT NOT NULL DEFAULT '';
+-- UPDATE projects SET tenant_slug = 'mariabelen' WHERE tenant_slug = '';
+-- UPDATE about    SET tenant_slug = 'mariabelen' WHERE tenant_slug = '';
+
+-- ============================================================
+-- Bucket de Storage para imagenes
+-- ============================================================
+-- Crea un bucket llamado "portfolio-images" marcado como publico
 -- en Supabase > Storage > New bucket
 -- Nombre: portfolio-images
--- Public bucket: ✅ activado
+-- Public bucket: ON activado
 -- ============================================================
 
--- Políticas de seguridad (Row Level Security)
--- Solo el service role (admin) puede escribir.
--- Lectura pública para el portafolio.
-
+-- Politicas de seguridad (Row Level Security)
 ALTER TABLE projects ENABLE ROW LEVEL SECURITY;
 ALTER TABLE about    ENABLE ROW LEVEL SECURITY;
 
--- Lectura pública
+-- Lectura publica
 CREATE POLICY "projects_public_read"
   ON projects FOR SELECT USING (true);
 
@@ -62,27 +74,29 @@ CREATE POLICY "about_public_read"
   ON about FOR SELECT USING (true);
 
 -- Escritura solo con service role (las API routes del admin lo usan)
--- No es necesario crear políticas para esto porque el service role
--- bypasea RLS automáticamente en Supabase.
+-- El service role bypasea RLS automaticamente en Supabase.
 
 -- ============================================================
--- Datos iniciales (opcional — el admin los puede editar luego)
+-- Datos iniciales para Maria Belen (tenant: mariabelen)
+-- Para agregar otro tenant, agrega otro INSERT con su tenant_slug.
 -- ============================================================
 INSERT INTO about (
+  tenant_slug,
   name, initials, role, subtitle, bio, photo_url,
   skills, email, linkedin_url, linkedin_display, instagram_url, instagram_display
 ) VALUES (
-  'Maria Belen Ferrándiz',
+  'mariabelen',
+  'Maria Belen Ferrandiz',
   'MBF',
-  'Arquitecta · Lima, Perú',
-  'Diseño espacios que dialogan con la luz, el material y el entorno.',
-  'Soy Maria Belen Ferrándiz, arquitecta de la Universidad Peruana de Ciencias Aplicadas. Me especializo en diseño residencial y de interiores con un enfoque bioclimático y sensible al contexto.
+  'Arquitecta - Lima, Peru',
+  'Diseno espacios que dialogan con la luz, el material y el entorno.',
+  'Soy Maria Belen Ferrandiz, arquitecta de la Universidad Peruana de Ciencias Aplicadas. Me especializo en diseno residencial y de interiores con un enfoque bioclimatico y sensible al contexto.
 
 Creo en una arquitectura que parte de la escucha: del lugar, del material y de quienes habitan el espacio. Cada proyecto es una oportunidad de crear algo duradero, honesto y bello.
 
-Actualmente colaboro con estudios de Lima y desarrollo proyectos propios de pequeña y mediana escala.',
+Actualmente colaboro con estudios de Lima y desarrollo proyectos propios de pequena y mediana escala.',
   'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=600&q=80',
-  ARRAY['Diseño residencial','Arquitectura bioclimática','Interiorismo','Paisajismo','Intervención patrimonial'],
+  ARRAY['Diseno residencial','Arquitectura bioclimatica','Interiorismo','Paisajismo','Intervencion patrimonial'],
   'mariabelen.ferrandiz@email.com',
   'https://www.linkedin.com/in/mar%C3%ADa-bel%C3%A9n-ferr%C3%A1ndiz-bendez%C3%BA-b8915a286/',
   'linkedin.com/in/mariabelenferrandiz',

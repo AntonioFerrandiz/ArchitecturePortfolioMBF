@@ -1,13 +1,16 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createAdminClient } from "@/lib/supabase-server";
+import { getTenantSlug } from "@/lib/tenant";
 
-// GET /api/admin/projects — obtener todos los proyectos
+// GET /api/admin/projects — obtener todos los proyectos del tenant
 export async function GET() {
   try {
+    const tenant = getTenantSlug();
     const supabase = createAdminClient();
     const { data, error } = await supabase
       .from("projects")
       .select("*")
+      .eq("tenant_slug", tenant)
       .order("order_index", { ascending: true });
 
     if (error) throw error;
@@ -18,16 +21,18 @@ export async function GET() {
   }
 }
 
-// POST /api/admin/projects — crear nuevo proyecto
+// POST /api/admin/projects — crear nuevo proyecto para el tenant
 export async function POST(request: NextRequest) {
   try {
+    const tenant = getTenantSlug();
     const body = await request.json();
     const supabase = createAdminClient();
 
-    // Obtener el índice máximo para agregar al final
+    // Obtener el índice máximo para este tenant
     const { data: last } = await supabase
       .from("projects")
       .select("order_index")
+      .eq("tenant_slug", tenant)
       .order("order_index", { ascending: false })
       .limit(1)
       .single();
@@ -37,6 +42,7 @@ export async function POST(request: NextRequest) {
     const { data, error } = await supabase
       .from("projects")
       .insert({
+        tenant_slug: tenant,
         title: body.title,
         location: body.location,
         year: body.year,

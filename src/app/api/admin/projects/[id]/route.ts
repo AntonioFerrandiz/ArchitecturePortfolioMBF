@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createAdminClient } from "@/lib/supabase-server";
+import { getTenantSlug } from "@/lib/tenant";
 
 // GET /api/admin/projects/[id]
 export async function GET(
@@ -8,11 +9,13 @@ export async function GET(
 ) {
   try {
     const { id } = await params;
+    const tenant = getTenantSlug();
     const supabase = createAdminClient();
     const { data, error } = await supabase
       .from("projects")
       .select("*")
       .eq("id", id)
+      .eq("tenant_slug", tenant)
       .single();
 
     if (error) throw error;
@@ -31,6 +34,7 @@ export async function PUT(
 ) {
   try {
     const { id } = await params;
+    const tenant = getTenantSlug();
     const body = await request.json();
     const supabase = createAdminClient();
 
@@ -49,6 +53,7 @@ export async function PUT(
         featured: body.featured ?? false,
       })
       .eq("id", id)
+      .eq("tenant_slug", tenant)
       .select()
       .single();
 
@@ -67,9 +72,14 @@ export async function DELETE(
 ) {
   try {
     const { id } = await params;
+    const tenant = getTenantSlug();
     const supabase = createAdminClient();
 
-    const { error } = await supabase.from("projects").delete().eq("id", id);
+    const { error } = await supabase
+      .from("projects")
+      .delete()
+      .eq("id", id)
+      .eq("tenant_slug", tenant);
     if (error) throw error;
     return NextResponse.json({ ok: true });
   } catch (error) {

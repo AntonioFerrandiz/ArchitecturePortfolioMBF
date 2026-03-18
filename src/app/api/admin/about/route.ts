@@ -1,14 +1,17 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createAdminClient } from "@/lib/supabase-server";
 import { DEFAULT_ABOUT } from "@/types";
+import { getTenantSlug } from "@/lib/tenant";
 
 // GET /api/admin/about
 export async function GET() {
   try {
+    const tenant = getTenantSlug();
     const supabase = createAdminClient();
     const { data, error } = await supabase
       .from("about")
       .select("*")
+      .eq("tenant_slug", tenant)
       .limit(1)
       .single();
 
@@ -23,19 +26,21 @@ export async function GET() {
 // PUT /api/admin/about
 export async function PUT(request: NextRequest) {
   try {
+    const tenant = getTenantSlug();
     const body = await request.json();
     const supabase = createAdminClient();
 
-    // Verificar si ya existe un registro
+    // Verificar si ya existe un registro para este tenant
     const { data: existing } = await supabase
       .from("about")
       .select("id")
+      .eq("tenant_slug", tenant)
       .limit(1)
       .single();
 
     let result;
     if (existing?.id) {
-      // Actualizar registro existente
+      // Actualizar registro existente del tenant
       const { data, error } = await supabase
         .from("about")
         .update({
@@ -53,15 +58,17 @@ export async function PUT(request: NextRequest) {
           instagram_display: body.instagram_display,
         })
         .eq("id", existing.id)
+        .eq("tenant_slug", tenant)
         .select()
         .single();
       if (error) throw error;
       result = data;
     } else {
-      // Insertar primer registro
+      // Insertar primer registro para este tenant
       const { data, error } = await supabase
         .from("about")
         .insert({
+          tenant_slug: tenant,
           name: body.name,
           initials: body.initials,
           role: body.role,

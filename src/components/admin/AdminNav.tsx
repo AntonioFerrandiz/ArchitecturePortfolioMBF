@@ -3,6 +3,7 @@
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { LayoutDashboard, FolderOpen, User, LogOut } from "lucide-react";
+import { useEffect, useState } from "react";
 
 const links = [
   { href: "/admin/dashboard", icon: LayoutDashboard, label: "Inicio" },
@@ -12,6 +13,14 @@ const links = [
 
 export default function AdminNav({ active }: { active: string }) {
   const router = useRouter();
+  const [initials, setInitials] = useState("");
+
+  useEffect(() => {
+    fetch("/api/admin/about")
+      .then((r) => r.json())
+      .then((d) => { if (d?.initials) setInitials(d.initials); })
+      .catch(() => {});
+  }, []);
 
   async function handleLogout() {
     await fetch("/api/admin/logout", { method: "POST" });
@@ -24,7 +33,7 @@ export default function AdminNav({ active }: { active: string }) {
       {/* Logo */}
       <div className="px-6 py-8 border-b border-[#3D3733]">
         <span className="font-display text-2xl tracking-widest text-[#FAF8F5] uppercase">
-          MBF
+          {initials || "···"}
         </span>
         <p className="text-[10px] tracking-[0.15em] uppercase text-[#5A534E] mt-1">
           Panel de administración

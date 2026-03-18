@@ -2,6 +2,7 @@
 
 export interface DbProject {
   id: string;
+  tenant_slug: string;
   title: string;
   location: string;
   year: string;
@@ -18,6 +19,7 @@ export interface DbProject {
 
 export interface DbAbout {
   id: string;
+  tenant_slug: string;
   name: string;
   initials: string;
   role: string;
@@ -35,6 +37,7 @@ export interface DbAbout {
 // Valores por defecto que coinciden con el contenido actual del portafolio
 export const DEFAULT_ABOUT: DbAbout = {
   id: "",
+  tenant_slug: "",
   name: "Maria Belen Ferrándiz",
   initials: "MBF",
   role: "Arquitecta · Lima, Perú",

@@ -23,7 +23,13 @@ async function fetchAbout(): Promise<DbAbout> {
   try {
     const supabase = getPublicClient();
     if (!supabase) return DEFAULT_ABOUT;
-    const { data } = await supabase.from("about").select("*").limit(1).single();
+    const tenant = process.env.TENANT_SLUG ?? "default";
+    const { data } = await supabase
+      .from("about")
+      .select("*")
+      .eq("tenant_slug", tenant)
+      .limit(1)
+      .single();
     return data ?? DEFAULT_ABOUT;
   } catch {
     return DEFAULT_ABOUT;
@@ -34,9 +40,11 @@ async function fetchProjects(): Promise<DbProject[] | undefined> {
   try {
     const supabase = getPublicClient();
     if (!supabase) return undefined;
+    const tenant = process.env.TENANT_SLUG ?? "default";
     const { data } = await supabase
       .from("projects")
       .select("*")
+      .eq("tenant_slug", tenant)
       .order("order_index", { ascending: true });
     if (!data || data.length === 0) return undefined;
     return data;
